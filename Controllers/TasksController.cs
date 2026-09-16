@@ -43,4 +43,25 @@ public class TasksController : ControllerBase
 
         return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateTask(int id, StudyTask task)
+    {
+        if (id != task.Id)
+            return BadRequest();
+
+        var existingTask = await _context.Tasks.FindAsync(id);
+
+        if (existingTask == null)
+            return NotFound();
+
+        existingTask.Title = task.Title;
+        existingTask.Description = task.Description;
+        existingTask.IsCompleted = task.IsCompleted;
+        existingTask.DueDate = task.DueDate;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
