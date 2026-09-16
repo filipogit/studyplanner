@@ -32,4 +32,15 @@ public class TasksController : ControllerBase
 
         return task;
     }
+
+    [HttpPost]
+    public async Task<ActionResult<StudyTask>> CreateTask(StudyTask task)
+    {
+        task.CreatedAt = DateTime.UtcNow;
+
+        _context.Tasks.Add(task);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
+    }
 }
