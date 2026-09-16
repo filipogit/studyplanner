@@ -21,4 +21,15 @@ public class TasksController : ControllerBase
     {
         return await _context.Tasks.ToListAsync();
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<StudyTask>> GetTask(int id)
+    {
+        var task = await _context.Tasks.FindAsync(id);
+
+        if (task == null)
+            return NotFound();
+
+        return task;
+    }
 }
