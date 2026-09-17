@@ -32,6 +32,18 @@ Swagger-dokumentation finns på `https://localhost:7257/swagger` i development-l
 | POST | /api/tasks/{id}/upload | Ladda upp fil till en uppgift |
 | GET | /api/tasks/{taskId}/files/{fileId} | Hämta en uppladdad fil |
 
+## Datamodell
+
+Varje uppgift (`StudyTask`) har följande fält:
+
+- **Title** – titel (obligatorisk, max 200 tecken)
+- **Description** – beskrivning (valfri, max 1000 tecken)
+- **Category** – ämne/kurs (valfri, max 100 tecken)
+- **IsCompleted** – om uppgiften är klar
+- **DueDate** – deadline (valfri)
+- **CreatedAt** – skapandedatum
+- **Attachments** – lista med bifogade filer
+
 ## Tekniska val
 
 ### ASP.NET WebAPI
