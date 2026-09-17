@@ -104,4 +104,21 @@ public class TasksController : ControllerBase
 
         return CreatedAtAction(nameof(GetTask), new { id = task.Id }, attachment);
     }
+
+    [HttpGet("{taskId}/files/{fileId}")]
+    public async Task<IActionResult> GetFile(int taskId, int fileId)
+    {
+        var attachment = await _context.FileAttachments
+            .FirstOrDefaultAsync(f => f.Id == fileId && f.StudyTaskId == taskId);
+
+        if (attachment == null)
+            return NotFound();
+
+        var filePath = Path.Combine(_env.ContentRootPath, "Uploads", attachment.StoredFileName);
+
+        if (!System.IO.File.Exists(filePath))
+            return NotFound(new { message = "File not found on disk" });
+
+        return PhysicalFile(filePath, attachment.ContentType, attachment.FileName);
+    }
 }
