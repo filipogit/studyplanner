@@ -10,22 +10,24 @@ namespace studyplanner.Controllers;
 public class TasksController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IWebHostEnvironment _env;
 
-    public TasksController(AppDbContext context)
+    public TasksController(AppDbContext context, IWebHostEnvironment env)
     {
         _context = context;
+        _env = env;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<StudyTask>>> GetTasks()
     {
-        return await _context.Tasks.ToListAsync();
+        return await _context.Tasks.Include(t => t.Attachments).ToListAsync();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<StudyTask>> GetTask(int id)
     {
-        var task = await _context.Tasks.FindAsync(id);
+        var task = await _context.Tasks.Include(t => t.Attachments).FirstOrDefaultAsync(t => t.Id == id);
 
         if (task == null)
             return NotFound();
@@ -63,5 +65,43 @@ public class TasksController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpPost("{id}/upload")]
+    public async Task<ActionResult<FileAttachment>> UploadFile(int id, IFormFile file)
+    {
+        var task = await _context.Tasks.FindAsync(id);
+
+        if (task == null)
+            return NotFound();
+
+        if (file.Length == 0)
+            return BadRequest(new { message = "File is empty" });
+
+        var uploadsPath = Path.Combine(_env.ContentRootPath, "Uploads");
+        Directory.CreateDirectory(uploadsPath);
+
+        var storedFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+        var filePath = Path.Combine(uploadsPath, storedFileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var attachment = new FileAttachment
+        {
+            FileName = file.FileName,
+            StoredFileName = storedFileName,
+            ContentType = file.ContentType,
+            FileSize = file.Length,
+            UploadedAt = DateTime.UtcNow,
+            StudyTaskId = id
+        };
+
+        _context.FileAttachments.Add(attachment);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetTask), new { id = task.Id }, attachment);
     }
 }

@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # SQLite database
 *.db
+
+# Uploaded files
+Uploads/
