@@ -17,9 +17,9 @@ dotnet ef database update
 dotnet run
 ```
 
-API:et startar på `https://localhost:5001` (eller `http://localhost:5000`).
+API:et startar på `https://localhost:7257` (eller `http://localhost:5237`).
 
-Swagger-dokumentation finns på `https://localhost:5001/swagger` i development-läge.
+Swagger-dokumentation finns på `https://localhost:7257/swagger` i development-läge.
 
 ## API-endpoints
 
