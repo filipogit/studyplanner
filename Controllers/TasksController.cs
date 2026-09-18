@@ -18,6 +18,7 @@ public class TasksController : ControllerBase
         _env = env;
     }
 
+    // Hämta alla uppgifter med tillhörande filer
     [HttpGet]
     public async Task<ActionResult<IEnumerable<StudyTask>>> GetTasks()
     {
@@ -35,6 +36,7 @@ public class TasksController : ControllerBase
         return task;
     }
 
+    // Skapa en ny uppgift
     [HttpPost]
     public async Task<ActionResult<StudyTask>> CreateTask(StudyTask task)
     {
@@ -46,6 +48,7 @@ public class TasksController : ControllerBase
         return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
     }
 
+    // Uppdatera en befintlig uppgift
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTask(int id, StudyTask task)
     {
@@ -67,6 +70,7 @@ public class TasksController : ControllerBase
         return NoContent();
     }
 
+    // Ta bort en uppgift och dess filer från disk
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTask(int id)
     {
@@ -91,6 +95,7 @@ public class TasksController : ControllerBase
         return NoContent();
     }
 
+    // Ladda upp en fil och koppla den till en uppgift
     [HttpPost("{id}/upload")]
     public async Task<ActionResult<FileAttachment>> UploadFile(int id, IFormFile file)
     {
@@ -129,6 +134,7 @@ public class TasksController : ControllerBase
         return CreatedAtAction(nameof(GetTask), new { id = task.Id }, attachment);
     }
 
+    // Hämta en uppladdad fil för nedladdning
     [HttpGet("{taskId}/files/{fileId}")]
     public async Task<IActionResult> GetFile(int taskId, int fileId)
     {
