@@ -29,6 +29,7 @@ Swagger-dokumentation finns på `https://localhost:7257/swagger` i development-l
 | GET | /api/tasks/{id} | Hämta en uppgift |
 | POST | /api/tasks | Skapa en uppgift |
 | PUT | /api/tasks/{id} | Uppdatera en uppgift |
+| DELETE | /api/tasks/{id} | Ta bort en uppgift |
 | POST | /api/tasks/{id}/upload | Ladda upp fil till en uppgift |
 | GET | /api/tasks/{taskId}/files/{fileId} | Hämta en uppladdad fil |
 
