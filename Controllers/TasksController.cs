@@ -67,6 +67,30 @@ public class TasksController : ControllerBase
         return NoContent();
     }
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTask(int id)
+    {
+        var task = await _context.Tasks.Include(t => t.Attachments).FirstOrDefaultAsync(t => t.Id == id);
+
+        if (task == null)
+            return NotFound();
+
+        if (task.Attachments != null)
+        {
+            foreach (var attachment in task.Attachments)
+            {
+                var filePath = Path.Combine(_env.ContentRootPath, "Uploads", attachment.StoredFileName);
+                if (System.IO.File.Exists(filePath))
+                    System.IO.File.Delete(filePath);
+            }
+        }
+
+        _context.Tasks.Remove(task);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     [HttpPost("{id}/upload")]
     public async Task<ActionResult<FileAttachment>> UploadFile(int id, IFormFile file)
     {
