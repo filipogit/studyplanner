@@ -62,6 +62,7 @@ public class TasksController : ControllerBase
 
         existingTask.Title = task.Title;
         existingTask.Description = task.Description;
+        existingTask.Category = task.Category;
         existingTask.IsCompleted = task.IsCompleted;
         existingTask.DueDate = task.DueDate;
 
