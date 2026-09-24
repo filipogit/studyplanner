@@ -31,7 +31,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseCors("AllowFrontend");
-app.UseHttpsRedirection();
+
+// Mobilappen når API:et via http på lokala nätverket och kan inte lita på dev-certifikatet.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.MapControllers();
 
 app.Run();
